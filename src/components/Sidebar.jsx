@@ -96,13 +96,8 @@ export default function Sidebar({
   }
 
   return (
-    <div
-      className={cn(
-        'flex flex-col overflow-hidden border-r border-border-subtle bg-canvas',
-        mobile ? 'h-full max-h-none' : 'max-h-[calc(100vh-232px)]',
-      )}
-    >
-      <div className="border-b border-border-subtle bg-canvas p-3">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
+      <div className="shrink-0 border-b border-border-subtle bg-white p-3">
         <div className="mb-2 flex items-center justify-between gap-2">
           <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-zinc-500">
             Tool Index
@@ -172,7 +167,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 border-b border-border-subtle px-3 py-1.5">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-white px-3 py-1.5">
         <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-400">
           {query ? `${totalVisibleTools} matches` : `${totalVisibleTools} tools`}
         </span>
@@ -196,7 +191,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-2 py-2">
+      <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-2 py-2.5">
         {visibleCategories.length === 0 && (
           <div className="px-3 py-8 text-center">
             <p className="text-[11px] font-medium text-zinc-700">No tools found</p>
@@ -218,23 +213,13 @@ export default function Sidebar({
                   type="button"
                   onClick={() => toggleCategory(category.id)}
                   className={cn(
-                    'focus-ring group flex w-full items-center gap-1.5 rounded-md border-l-2 px-2 py-1.5 text-left transition',
+                    'focus-ring group flex w-full items-center gap-2 rounded-md border-l-2 px-2 py-1.5 text-left transition',
                     activeCategory
                       ? 'border-l-brand bg-brand-tint/70'
                       : 'border-l-transparent hover:bg-card-hover',
                   )}
                   aria-expanded={open}
                 >
-                  <ChevronRight
-                    size={12}
-                    className={cn(
-                      'shrink-0 text-zinc-400 transition-transform duration-200 group-hover:text-zinc-600',
-                      open && 'rotate-90',
-                    )}
-                  />
-                  <span className="w-4 shrink-0 font-mono text-[8.5px] text-zinc-400">
-                    {category.number}
-                  </span>
                   <CategoryIcon
                     size={13}
                     className={cn(
@@ -245,13 +230,20 @@ export default function Sidebar({
                   <span className="min-w-0 flex-1 truncate text-[10.5px] font-medium text-zinc-600 transition group-hover:text-zinc-900">
                     {category.label}
                   </span>
-                  <span className="rounded-sm border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-[8.5px] text-zinc-600">
+                  <span className="shrink-0 rounded-sm border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-[8.5px] text-zinc-600">
                     {category.filteredTools.length}
                   </span>
+                  <ChevronRight
+                    size={12}
+                    className={cn(
+                      'shrink-0 text-zinc-400 transition-transform duration-200 group-hover:text-zinc-600',
+                      open && 'rotate-90',
+                    )}
+                  />
                 </button>
 
                 {open && (
-                  <div className="ml-3.5 space-y-0.5 border-l border-border-subtle py-0.5 pl-2">
+                  <div className="my-1 ml-3.5 space-y-0.5 border-l border-zinc-200 pl-2.5">
                     {category.filteredTools.map((tool) => {
                       const active = tool.id === selectedToolId
                       return (
@@ -260,10 +252,10 @@ export default function Sidebar({
                           type="button"
                           onClick={() => onSelectTool(tool.id)}
                           className={cn(
-                            'group flex w-full items-start gap-1.5 rounded-sm border-l-2 px-2 py-1.5 text-left transition',
+                            'group flex w-full items-start gap-1.5 border-l-2 py-1.5 pr-2 text-left transition',
                             active
-                              ? 'border-brand bg-orange-50 font-semibold text-orange-950'
-                              : 'border-transparent text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
+                              ? 'rounded-r border-brand bg-orange-50 pl-2 font-semibold text-orange-950'
+                              : 'rounded-sm border-transparent pl-2 text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
                           )}
                         >
                           <span
@@ -292,7 +284,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="border-t border-border-subtle bg-canvas px-3 py-2">
+      <div className="shrink-0 border-t border-border-subtle bg-white px-3 py-2">
         <p className="flex items-center justify-between font-mono text-[8.5px] uppercase tracking-[0.12em] text-zinc-400">
           <span>9 domains</span>
           <span className="text-emerald-700">live · persisted</span>

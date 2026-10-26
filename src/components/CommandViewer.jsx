@@ -40,14 +40,19 @@ function TokenText({ text, vars }) {
 
 function Callout({ icon: Icon, label, text, iconClass, className }) {
   return (
-    <div className={cn('rounded-md border px-3 py-2.5 transition', className)}>
+    <div
+      className={cn(
+        'flex h-full min-h-[96px] flex-col justify-between rounded-lg border p-3.5 transition',
+        className,
+      )}
+    >
       <div className="flex items-center gap-1.5">
         <Icon size={11} className={cn('shrink-0', iconClass)} />
         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-zinc-500">
           {label}
         </span>
       </div>
-      <p className="mt-1 text-[11px] leading-[1.55] text-zinc-800">{text}</p>
+      <p className="mt-2 text-[11px] leading-[1.55] text-zinc-800">{text}</p>
     </div>
   )
 }
@@ -82,10 +87,13 @@ export default function CommandViewer({
 }) {
   const [commandQuery, setCommandQuery] = useState('')
   const [copiedKey, setCopiedKey] = useState(null)
+  const [activeSection, setActiveSection] = useState(null)
   const copyTimer = useRef(null)
 
   useEffect(() => {
     setCommandQuery('')
+    const scroller = document.querySelector('main')
+    if (scroller) scroller.scrollTop = 0
   }, [tool.id])
 
   useEffect(() => {
@@ -122,6 +130,35 @@ export default function CommandViewer({
     (total, section) => total + section.filtered.length,
     0,
   )
+
+  const sectionSignature = visibleSections.map((section) => section.index).join(',')
+
+  useEffect(() => {
+    const scroller = document.querySelector('main')
+    if (!scroller || visibleSections.length === 0) {
+      setActiveSection(null)
+      return
+    }
+
+    const ids = visibleSections.map((section) => `sec-${tool.id}-${section.index}`)
+
+    const update = () => {
+      const threshold = scroller.getBoundingClientRect().top + 48
+      let current = ids[0]
+      ids.forEach((id) => {
+        const element = document.getElementById(id)
+        if (element && element.getBoundingClientRect().top <= threshold) current = id
+      })
+      const match = visibleSections.find(
+        (section) => `sec-${tool.id}-${section.index}` === current,
+      )
+      setActiveSection(match ? match.index : null)
+    }
+
+    update()
+    scroller.addEventListener('scroll', update, { passive: true })
+    return () => scroller.removeEventListener('scroll', update)
+  }, [tool.id, sectionSignature])
 
   const flashCopied = (key) => {
     setCopiedKey(key)
@@ -202,7 +239,7 @@ export default function CommandViewer({
             </div>
           )}
 
-          <div className="mt-4 grid gap-2 md:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
             <Callout
               icon={Target}
               label="// OBJECTIVE"
@@ -296,20 +333,34 @@ export default function CommandViewer({
             Jump
           </span>
           <div className="no-scrollbar flex min-w-0 flex-1 gap-1 overflow-x-auto pb-0.5">
-            {visibleSections.map((section) => (
-              <button
-                key={section.index}
-                type="button"
-                onClick={() => jumpToSection(section.index)}
-                className="focus-ring group inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-border-subtle bg-white px-2 py-1 text-[9.5px] text-zinc-700 transition hover:border-brand-light hover:text-brand"
-                title={section.title}
-              >
-                <span className="font-mono text-[8.5px] text-zinc-400 transition group-hover:text-brand/80">
-                  {String(section.index + 1).padStart(2, '0')}
-                </span>
-                <span className="max-w-[130px] truncate">{section.title}</span>
-              </button>
-            ))}
+            {visibleSections.map((section) => {
+              const active = section.index === activeSection
+              return (
+                <button
+                  key={section.index}
+                  type="button"
+                  onClick={() => jumpToSection(section.index)}
+                  className={cn(
+                    'focus-ring group inline-flex shrink-0 items-center gap-1.5 rounded-sm border px-2 py-1 text-[9.5px] transition',
+                    active
+                      ? 'border-brand bg-brand-tint font-semibold text-brand'
+                      : 'border-border-subtle bg-white text-zinc-700 hover:border-brand-light hover:text-brand',
+                  )}
+                  title={section.title}
+                  aria-current={active ? 'true' : undefined}
+                >
+                  <span
+                    className={cn(
+                      'font-mono text-[8.5px] transition',
+                      active ? 'text-brand' : 'text-zinc-400 group-hover:text-brand/80',
+                    )}
+                  >
+                    {String(section.index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="max-w-[130px] truncate">{section.title}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -369,30 +420,33 @@ export default function CommandViewer({
             </div>
 
             <div className="overflow-hidden rounded-b-lg border border-zinc-200 bg-white">
-              {section.filtered.map((command, rowIndex) => {
+              <div className="grid grid-cols-[1fr] items-center gap-4 rounded-t-lg border-b border-border-subtle bg-zinc-50/90 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-500 sm:grid-cols-[1fr_260px_84px] lg:grid-cols-[1fr_340px_84px] xl:grid-cols-[1fr_420px_84px]">
+                <span>Command Syntax (Live Parameters)</span>
+                <span className="hidden sm:block">Operation &amp; Flags</span>
+                <span className="hidden text-right sm:block">Action</span>
+              </div>
+
+              {section.filtered.map((command) => {
                 const key = `${section.index}-${command.commandIndex}`
                 return (
                   <div
                     key={key}
-                    className={cn(
-                      'group grid gap-2 bg-white px-3 py-2.5 transition hover:bg-orange-50/30 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_auto] lg:items-start lg:gap-6',
-                      rowIndex > 0 && 'border-t border-border-subtle',
-                    )}
+                    className="grid grid-cols-[1fr] items-center gap-4 border-t border-border-subtle bg-white px-4 py-3 transition hover:bg-orange-50/30 sm:grid-cols-[1fr_260px_84px] lg:grid-cols-[1fr_340px_84px] xl:grid-cols-[1fr_420px_84px]"
                   >
-                    <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-[12px] leading-[1.7] text-slate-900">
+                    <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-[12.5px] leading-relaxed text-slate-900">
                       <span className="mr-1.5 select-none text-xs text-brand/50">$</span>
                       {rawMode ? command.command : <TokenText text={command.command} vars={vars} />}
                     </code>
 
-                    <div className="min-w-0 whitespace-pre-wrap break-words font-mono text-[11px] leading-[1.7] lg:pt-0.5">
+                    <div className="min-w-0 whitespace-pre-wrap break-words font-mono text-[11px] leading-normal text-emerald-800">
                       {command.comment ? (
-                        <span className="text-emerald-800">{commentText(command.comment)}</span>
+                        <span>{commentText(command.comment)}</span>
                       ) : (
                         <span className="text-zinc-300">—</span>
                       )}
                     </div>
 
-                    <div className="flex justify-end lg:pt-0.5">
+                    <div className="ml-auto flex w-[84px] justify-end sm:ml-0">
                       <CopyButton
                         copied={copiedKey === key}
                         onClick={() => copyCommand(key, command)}

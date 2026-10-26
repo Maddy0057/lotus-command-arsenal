@@ -41,18 +41,19 @@ function VarField({ field, value, onChange }) {
   return (
     <label
       className={cn(
-        'group relative block cursor-text rounded-md border border-border-subtle bg-white px-3 py-2 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand/20',
+        'group flex h-9 cursor-text items-center gap-2 rounded-md border border-border-subtle bg-white px-2.5 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand/20',
         field.wide && 'sm:col-span-2',
       )}
     >
-      <span className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-zinc-500 transition group-focus-within:text-brand">
-          <Icon size={11} className="shrink-0" />
-          {field.label}
-        </span>
-        <span className="font-mono text-[9px] text-zinc-400 transition group-focus-within:text-brand/80">
-          ${field.key}
-        </span>
+      <Icon
+        size={12}
+        className="shrink-0 text-zinc-400 transition group-focus-within:text-brand"
+      />
+      <span className="shrink-0 whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.12em] text-zinc-500 transition group-focus-within:text-brand">
+        {field.label}
+      </span>
+      <span className="hidden shrink-0 rounded-sm bg-panel px-1 py-0.5 font-mono text-[8.5px] text-zinc-400 transition group-focus-within:text-brand/80 md:inline">
+        ${field.key}
       </span>
       <input
         value={value}
@@ -60,7 +61,7 @@ function VarField({ field, value, onChange }) {
         placeholder={field.placeholder}
         spellCheck={false}
         autoComplete="off"
-        className="mt-0.5 w-full bg-transparent font-mono text-[12.5px] font-medium text-zinc-900 outline-none placeholder:text-zinc-400"
+        className="min-w-0 flex-1 bg-transparent font-mono text-[12px] font-medium text-zinc-900 outline-none placeholder:text-zinc-400"
       />
     </label>
   )
@@ -71,7 +72,7 @@ export default function ParameterHUD() {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   return (
-    <div className="relative border-b border-border-subtle bg-panel">
+    <div className="border-b border-border-subtle bg-panel">
       <div className="mx-auto max-w-[1800px] px-4 py-2.5 lg:px-6">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 pr-1">
@@ -87,7 +88,7 @@ export default function ParameterHUD() {
             </span>
           </div>
 
-          <div className="ml-auto flex flex-wrap items-center gap-1.5">
+          <div className="no-scrollbar ml-auto flex items-center gap-1.5 overflow-x-auto">
             {presets.map((preset) => {
               const active = activePreset === preset.id
               return (
@@ -97,7 +98,7 @@ export default function ParameterHUD() {
                   onClick={() => applyPreset(preset.id)}
                   title={preset.hint}
                   className={cn(
-                    'focus-ring inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[10px] font-medium transition',
+                    'focus-ring inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 py-1 text-[10px] font-medium transition',
                     active
                       ? 'border-brand-border bg-brand-tint text-brand'
                       : 'border-border-subtle bg-white text-zinc-700 hover:border-brand-light hover:text-brand',
@@ -112,7 +113,7 @@ export default function ParameterHUD() {
             <button
               type="button"
               onClick={resetDefaults}
-              className="focus-ring inline-flex items-center gap-1 rounded-md border border-border-subtle bg-white px-2.5 py-1 text-[10px] font-medium text-zinc-700 transition hover:border-red-300 hover:text-red-600"
+              className="focus-ring inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md border border-border-subtle bg-white px-2.5 py-1 text-[10px] font-medium text-zinc-700 transition hover:border-red-300 hover:text-red-600"
               title="Restore factory parameter values"
             >
               <RotateCcw size={10} />
@@ -158,11 +159,17 @@ export default function ParameterHUD() {
             12 variables · persisted locally
           </span>
         </div>
-      </div>
 
-      {drawerOpen && (
-        <div className="absolute inset-x-0 top-full z-50 animate-fade-in border-b border-border-subtle bg-white shadow-xl">
-          <div className="mx-auto max-w-[1800px] px-4 py-3 lg:px-6">
+        <div
+          aria-hidden={!drawerOpen}
+          className={cn(
+            'overflow-hidden transition-all duration-200',
+            drawerOpen
+              ? 'mt-2.5 max-h-[640px] border-t border-border-subtle pt-2.5 opacity-100'
+              : 'pointer-events-none mt-0 max-h-0 border-t border-transparent pt-0 opacity-0',
+          )}
+        >
+          <div className="pb-1">
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="grid h-6 w-6 place-items-center rounded-sm border border-brand-border bg-brand-tint text-brand">
@@ -180,7 +187,7 @@ export default function ParameterHUD() {
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                className="focus-ring rounded-sm border border-border-subtle bg-white px-2 py-1 text-[9.5px] text-zinc-600 transition hover:border-brand-light hover:text-brand"
+                className="focus-ring shrink-0 rounded-sm border border-border-subtle bg-white px-2 py-1 text-[9.5px] text-zinc-600 transition hover:border-brand-light hover:text-brand"
               >
                 Close
               </button>
@@ -192,7 +199,7 @@ export default function ParameterHUD() {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }

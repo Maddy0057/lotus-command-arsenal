@@ -110,8 +110,8 @@ export default function App() {
   }, [])
 
   return (
-    <div className="min-h-screen">
-      <div className="sticky top-0 z-50 shadow-[0_8px_24px_-20px_rgba(28,25,23,0.35)]">
+    <div className="flex h-screen flex-col overflow-hidden bg-canvas">
+      <div className="relative z-30 shrink-0 shadow-[0_8px_24px_-20px_rgba(28,25,23,0.35)]">
         <Header
           stats={ARSENAL.stats}
           rawMode={rawMode}
@@ -122,25 +122,23 @@ export default function App() {
         <ParameterHUD />
       </div>
 
-      <div className="mx-auto max-w-[1800px] px-4 py-5 lg:px-6">
-        <div className="flex items-start gap-5">
-          <aside className="hidden w-[302px] shrink-0 lg:block">
-            <div className="sticky top-[214px]">
-              <Sidebar
-                categories={ARSENAL.categories}
-                search={search}
-                onSearchChange={setSearch}
-                activeFilter={activeFilter}
-                onFilterChange={handleFilterChange}
-                selectedToolId={selectedTool?.id}
-                selectedCategoryId={selectedCategory?.id}
-                onSelectTool={handleSelectTool}
-                onCloseMobile={() => setMobileOpen(false)}
-              />
-            </div>
-          </aside>
+      <div className="flex min-h-0 flex-1 overflow-hidden">
+        <aside className="hidden h-full w-72 shrink-0 flex-col overflow-hidden border-r border-border-subtle bg-white lg:flex xl:w-80">
+          <Sidebar
+            categories={ARSENAL.categories}
+            search={search}
+            onSearchChange={setSearch}
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+            selectedToolId={selectedTool?.id}
+            selectedCategoryId={selectedCategory?.id}
+            onSelectTool={handleSelectTool}
+            onCloseMobile={() => setMobileOpen(false)}
+          />
+        </aside>
 
-          <main className="min-w-0 flex-1">
+        <main className="h-full flex-1 overflow-y-auto scroll-smooth bg-canvas px-5 py-6 lg:px-8 lg:py-8">
+          <div className="mx-auto w-full max-w-[1600px]">
             {selectedTool && (
               <CommandViewer
                 tool={selectedTool}
@@ -151,17 +149,17 @@ export default function App() {
                 onTagClick={handleTagClick}
               />
             )}
-          </main>
-        </div>
 
-        <footer className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-500">
-            LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
-          </p>
-          <p className="font-mono text-[9px] text-zinc-400">
-            44 tools · 2,043 commands · interpolated locally · no telemetry
-          </p>
-        </footer>
+            <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-500">
+                LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
+              </p>
+              <p className="font-mono text-[9px] text-zinc-400">
+                44 tools · 2,043 commands · interpolated locally · no telemetry
+              </p>
+            </footer>
+          </div>
+        </main>
       </div>
 
       {mobileOpen && (
