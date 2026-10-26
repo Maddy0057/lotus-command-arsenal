@@ -1,22 +1,137 @@
+import {
+  Bug,
+  GitFork,
+  Globe,
+  KeyRound,
+  Radar,
+  Server,
+  Shield,
+  Swords,
+  Terminal,
+} from 'lucide-react'
 import arsenal from '../data/arsenal.json'
+
+const EMOJI_PATTERN = /[\p{Extended_Pictographic}\u{FE0F}\u{200D}\u{20E3}]/gu
+const TECHNICAL_ARROWS = /^[\u2190-\u21FF]$/
+
+export function stripEmoji(value) {
+  if (typeof value !== 'string' || value.length === 0) return value ?? ''
+
+  return value
+    .replace(EMOJI_PATTERN, (match) => (TECHNICAL_ARROWS.test(match) ? match : ' '))
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .replace(/^[.\-–—:|]+\s*/, '')
+    .trim()
+}
+
+export const CATEGORY_META = {
+  '00': {
+    label: 'Battlecards',
+    title: 'Instant Exam Battlecards',
+    icon: Swords,
+  },
+  '01': {
+    label: 'Port Scanning',
+    title: 'Port Scanning & Fingerprinting',
+    icon: Radar,
+  },
+  '02': {
+    label: 'Web Fuzzing',
+    title: 'Web Fuzzing & Discovery',
+    icon: Globe,
+  },
+  '03': {
+    label: 'Exploitation',
+    title: 'Exploitation & Vulnerabilities',
+    icon: Bug,
+  },
+  '04': {
+    label: 'Remote Access',
+    title: 'Shells, Listeners & Remote Access',
+    icon: Terminal,
+  },
+  '05': {
+    label: 'Privilege Escalation',
+    title: 'Privilege Escalation & Local Auditing',
+    icon: Shield,
+  },
+  '06': {
+    label: 'Active Directory',
+    title: 'Active Directory & Kerberos',
+    icon: Server,
+  },
+  '07': {
+    label: 'Network Spraying & Pivoting',
+    title: 'Network Spraying & Pivoting',
+    icon: GitFork,
+  },
+  '08': {
+    label: 'Password Cracking',
+    title: 'Password Cracking & Wordlists',
+    icon: KeyRound,
+  },
+}
+
+const FILTER_DEFS = [
+  { id: 'battlecards', prefix: '00' },
+  { id: 'scanning', prefix: '01' },
+  { id: 'web', prefix: '02' },
+  { id: 'exploit', prefix: '03' },
+  { id: 'shells', prefix: '04' },
+  { id: 'privesc', prefix: '05' },
+  { id: 'active-directory', prefix: '06' },
+  { id: 'pivoting', prefix: '07' },
+  { id: 'cracking', prefix: '08' },
+]
 
 export const CATEGORY_FILTERS = [
   { id: 'all', label: 'All' },
-  { id: 'battlecards', label: 'Battlecards', prefix: '00' },
-  { id: 'scanning', label: 'Scanning', prefix: '01' },
-  { id: 'web', label: 'Web', prefix: '02' },
-  { id: 'exploit', label: 'Exploit', prefix: '03' },
-  { id: 'shells', label: 'Shells', prefix: '04' },
-  { id: 'privesc', label: 'PrivEsc', prefix: '05' },
-  { id: 'active-directory', label: 'Active Directory', prefix: '06' },
-  { id: 'pivoting', label: 'Pivoting', prefix: '07' },
-  { id: 'cracking', label: 'Cracking', prefix: '08' },
+  ...FILTER_DEFS.map((filter) => ({
+    ...filter,
+    label: CATEGORY_META[filter.prefix]?.label || filter.id,
+    icon: CATEGORY_META[filter.prefix]?.icon,
+  })),
 ]
 
 const FILTER_BY_PREFIX = CATEGORY_FILTERS.reduce((acc, filter) => {
   if (filter.prefix) acc[filter.prefix] = filter
   return acc
 }, {})
+
+function sanitizeCommand(command) {
+  return {
+    ...command,
+    command: stripEmoji(command.command),
+    comment: stripEmoji(command.comment),
+    full: stripEmoji(command.full),
+  }
+}
+
+function sanitizeSection(section) {
+  return {
+    ...section,
+    title: stripEmoji(section.title),
+    commands: (section.commands || []).map(sanitizeCommand),
+  }
+}
+
+function sanitizeTool(tool) {
+  const callout = tool.callout || {}
+
+  return {
+    ...tool,
+    shortName: stripEmoji(tool.shortName),
+    fullTitle: stripEmoji(tool.fullTitle),
+    tags: (tool.tags || []).map(stripEmoji).filter(Boolean),
+    callout: {
+      why: stripEmoji(callout.why),
+      where: stripEmoji(callout.where),
+      when: stripEmoji(callout.when),
+    },
+    sections: (tool.sections || []).map(sanitizeSection),
+  }
+}
 
 function buildHaystack(tool) {
   const callout = tool.callout || {}
@@ -44,8 +159,12 @@ export function buildArsenal() {
   const categories = arsenal.map((category, index) => {
     const prefix = category.id.slice(0, 2)
     const filter = FILTER_BY_PREFIX[prefix]
+    const meta = CATEGORY_META[prefix]
+    const title = meta?.title || stripEmoji(category.title)
+    const label = meta?.label || stripEmoji(category.title)
 
-    const tools = (category.tools || []).map((tool) => {
+    const tools = (category.tools || []).map((rawTool) => {
+      const tool = sanitizeTool(rawTool)
       const commandCount = (tool.sections || []).reduce(
         (total, section) => total + (section.commands?.length || 0),
         0,
@@ -54,9 +173,9 @@ export function buildArsenal() {
       return {
         ...tool,
         categoryId: category.id,
-        categoryTitle: category.title,
+        categoryTitle: title,
         categoryIndex: index,
-        categoryLabel: filter?.label || category.title,
+        categoryLabel: label,
         commandCount,
         searchHaystack: buildHaystack(tool),
       }
@@ -64,10 +183,13 @@ export function buildArsenal() {
 
     return {
       ...category,
+      title,
+      label,
+      number: prefix,
+      icon: meta?.icon || Terminal,
       index,
       prefix,
       filterId: filter?.id || 'all',
-      label: filter?.label || category.title,
       tools,
       toolCount: tools.length,
       commandCount: tools.reduce((total, tool) => total + tool.commandCount, 0),
@@ -83,6 +205,7 @@ export function buildArsenal() {
       tools: tools.length,
       commands: categories.reduce((total, category) => total + category.commandCount, 0),
       categories: categories.length,
+      domains: categories.length,
     },
   }
 }

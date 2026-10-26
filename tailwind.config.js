@@ -4,28 +4,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        canvas: '#08090a',
-        panel: '#0f1011',
-        card: '#16181a',
-        'card-hover': '#1f2124',
-        'border-subtle': 'rgba(255, 255, 255, 0.06)',
-        'border-bright': 'rgba(255, 255, 255, 0.12)',
+        canvas: '#090a0f',
+        panel: '#0c0d12',
+        card: '#111319',
+        'card-hover': '#161922',
+        elevated: '#1b1f2b',
+        'border-subtle': 'rgba(255, 255, 255, 0.08)',
+        'border-bright': '#1b1f2b',
         brand: {
-          DEFAULT: '#5e6ad2',
-          light: '#7170ff',
-          bright: '#828fff',
+          DEFAULT: '#06b6d4',
+          light: '#22d3ee',
+          bright: '#00e5ff',
         },
         'terminal-green': '#4ade80',
-        'token-cyan': '#38bdf8',
-        'token-bg': 'rgba(56, 189, 248, 0.15)',
+        'terminal-dim': '#6a9955',
+        'token-cyan': '#22d3ee',
+        'token-bg': 'rgba(8, 51, 68, 0.4)',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       boxShadow: {
-        panel: '0 1px 0 0 rgba(255,255,255,0.04) inset, 0 16px 40px -24px rgba(0,0,0,0.9)',
-        glow: '0 0 0 1px rgba(113,112,255,0.25), 0 0 32px -8px rgba(113,112,255,0.45)',
+        panel: 'inset 0 1px 0 rgba(255,255,255,0.03), 0 1px 2px rgba(0,0,0,0.5)',
+        glow: '0 0 0 1px rgba(0,229,255,0.18), 0 0 24px -10px rgba(0,229,255,0.35)',
       },
       keyframes: {
         fadeIn: {

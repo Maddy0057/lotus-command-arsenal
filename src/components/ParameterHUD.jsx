@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Check,
   ChevronDown,
   Globe,
   Hash,
@@ -12,7 +13,6 @@ import {
   SlidersHorizontal,
   Target,
   User,
-  Zap,
 } from 'lucide-react'
 import { useExamVars } from '../context/ExamVarsContext'
 import { cn } from '../lib/utils'
@@ -41,7 +41,7 @@ function VarField({ field, value, onChange }) {
   return (
     <label
       className={cn(
-        'group relative block cursor-text rounded-lg border border-border-subtle bg-card/70 px-3 py-2 transition focus-within:border-brand/60 focus-within:bg-card focus-within:shadow-[0_0_0_1px_rgba(113,112,255,0.35)]',
+        'group relative block cursor-text rounded-md border border-border-subtle bg-card px-3 py-2 transition focus-within:border-brand/60 focus-within:bg-card-hover focus-within:shadow-[0_0_0_1px_rgba(0,229,255,0.18)]',
         field.wide && 'sm:col-span-2',
       )}
     >
@@ -71,7 +71,7 @@ export default function ParameterHUD() {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   return (
-    <div className="relative border-b border-border-subtle bg-panel/85 glass">
+    <div className="relative border-b border-border-subtle bg-panel">
       <div className="mx-auto max-w-[1800px] px-4 py-2.5 lg:px-6">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 pr-1">
@@ -82,7 +82,7 @@ export default function ParameterHUD() {
             <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-zinc-300">
               Parameter HUD
             </span>
-            <span className="hidden rounded border border-terminal-green/25 bg-terminal-green/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-terminal-green sm:inline">
+            <span className="hidden rounded-sm border border-terminal-green/30 bg-terminal-green/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-terminal-green sm:inline">
               Live interpolation
             </span>
           </div>
@@ -97,13 +97,13 @@ export default function ParameterHUD() {
                   onClick={() => applyPreset(preset.id)}
                   title={preset.hint}
                   className={cn(
-                    'focus-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium transition',
+                    'focus-ring inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[10px] font-medium transition',
                     active
-                      ? 'border-brand/50 bg-brand/15 text-brand-bright shadow-[0_0_18px_-6px_rgba(113,112,255,0.8)]'
-                      : 'border-border-subtle bg-card/70 text-zinc-400 hover:border-border-bright hover:text-zinc-100',
+                      ? 'border-brand/45 bg-brand/10 text-brand-bright'
+                      : 'border-border-subtle bg-card text-zinc-400 hover:border-border-bright hover:text-zinc-100',
                   )}
                 >
-                  {active && <Zap size={10} />}
+                  {active && <Check size={10} />}
                   {preset.label}
                   <span className="hidden font-mono text-[8.5px] text-zinc-600 lg:inline">{preset.hint}</span>
                 </button>
@@ -112,7 +112,7 @@ export default function ParameterHUD() {
             <button
               type="button"
               onClick={resetDefaults}
-              className="focus-ring inline-flex items-center gap-1 rounded-full border border-border-subtle bg-card/70 px-2.5 py-1 text-[10px] font-medium text-zinc-400 transition hover:border-red-400/40 hover:text-red-300"
+              className="focus-ring inline-flex items-center gap-1 rounded-md border border-border-subtle bg-card px-2.5 py-1 text-[10px] font-medium text-zinc-400 transition hover:border-red-400/35 hover:text-red-300"
               title="Restore factory parameter values"
             >
               <RotateCcw size={10} />
@@ -133,15 +133,15 @@ export default function ParameterHUD() {
             onClick={() => setDrawerOpen((open) => !open)}
             aria-expanded={drawerOpen}
             className={cn(
-              'focus-ring inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-[10.5px] font-medium transition',
+              'focus-ring inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-[10.5px] font-medium transition',
               drawerOpen
                 ? 'border-brand/40 bg-brand/10 text-brand-bright'
-                : 'border-border-subtle bg-card/60 text-zinc-400 hover:border-border-bright hover:text-zinc-100',
+                : 'border-border-subtle bg-card text-zinc-400 hover:border-border-bright hover:text-zinc-100',
             )}
           >
-            <span aria-hidden="true">🏰</span>
-            Active Directory &amp; Enterprise Parameters
-            <span className="rounded bg-panel px-1 font-mono text-[9px] text-zinc-500">8</span>
+            <Server size={12} />
+            Active Directory &amp; Kerberos Parameters
+            <span className="rounded-sm bg-panel px-1 font-mono text-[9px] text-zinc-500">8</span>
             <ChevronDown
               size={12}
               className={cn('transition-transform duration-200', drawerOpen && 'rotate-180')}
@@ -161,26 +161,26 @@ export default function ParameterHUD() {
       </div>
 
       {drawerOpen && (
-        <div className="absolute inset-x-0 top-full z-50 animate-fade-in border-b border-border-bright bg-panel/95 shadow-2xl backdrop-blur-2xl">
+        <div className="absolute inset-x-0 top-full z-50 animate-fade-in border-b border-border-bright bg-panel shadow-2xl">
           <div className="mx-auto max-w-[1800px] px-4 py-3 lg:px-6">
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="grid h-6 w-6 place-items-center rounded-md border border-brand/30 bg-brand/10 text-[11px]">
-                  🏰
+                <span className="grid h-6 w-6 place-items-center rounded-sm border border-brand/30 bg-brand/10 text-brand-bright">
+                  <Server size={12} />
                 </span>
                 <div>
                   <p className="text-[11px] font-semibold text-zinc-200">
-                    Active Directory &amp; Enterprise Parameters
+                    Active Directory &amp; Kerberos Parameters
                   </p>
                   <p className="text-[9.5px] text-zinc-500">
-                    Kerberos, LDAP, SMB, spraying and cracking tokens for domain domination.
+                    Kerberos, LDAP, SMB, spraying and cracking tokens for domain operations.
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                className="focus-ring rounded-md border border-border-subtle bg-card px-2 py-1 text-[9.5px] text-zinc-400 transition hover:text-white"
+                className="focus-ring rounded-sm border border-border-subtle bg-card px-2 py-1 text-[9.5px] text-zinc-400 transition hover:text-white"
               >
                 Close
               </button>
