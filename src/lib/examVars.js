@@ -34,6 +34,7 @@ export const PRESETS = [
   {
     id: 'oscp',
     label: 'OSCP Exam',
+    short: 'OSCP',
     hint: '192.168.45.X',
     values: {
       TARGET: '192.168.45.10',
@@ -53,6 +54,7 @@ export const PRESETS = [
   {
     id: 'htb',
     label: 'HTB ProLabs',
+    short: 'HTB',
     hint: '10.10.14.X / 10.10.11.X',
     values: {
       TARGET: '10.10.11.10',
@@ -72,6 +74,7 @@ export const PRESETS = [
   {
     id: 'ad-lab',
     label: 'Active Directory Lab',
+    short: 'AD Lab',
     hint: '10.0.0.X / corp.local',
     values: {
       TARGET: '10.0.0.10',

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Braces,
   Check,
+  ChevronRight,
   Clock,
   Copy,
   FolderOpen,
@@ -92,8 +93,7 @@ export default function CommandViewer({
 
   useEffect(() => {
     setCommandQuery('')
-    const scroller = document.querySelector('main')
-    if (scroller) scroller.scrollTop = 0
+    window.scrollTo({ top: 0, behavior: 'auto' })
   }, [tool.id])
 
   useEffect(() => {
@@ -134,16 +134,15 @@ export default function CommandViewer({
   const sectionSignature = visibleSections.map((section) => section.index).join(',')
 
   useEffect(() => {
-    const scroller = document.querySelector('main')
-    if (!scroller || visibleSections.length === 0) {
+    if (visibleSections.length === 0) {
       setActiveSection(null)
-      return
+      return undefined
     }
 
     const ids = visibleSections.map((section) => `sec-${tool.id}-${section.index}`)
 
     const update = () => {
-      const threshold = scroller.getBoundingClientRect().top + 48
+      const threshold = 92 + 16
       let current = ids[0]
       ids.forEach((id) => {
         const element = document.getElementById(id)
@@ -156,8 +155,12 @@ export default function CommandViewer({
     }
 
     update()
-    scroller.addEventListener('scroll', update, { passive: true })
-    return () => scroller.removeEventListener('scroll', update)
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [tool.id, sectionSignature])
 
   const flashCopied = (key) => {
@@ -194,31 +197,39 @@ export default function CommandViewer({
     <div className="min-w-0 animate-fade-in">
       <div className="relative overflow-hidden rounded-xl border border-border-subtle bg-white shadow-sm">
         <div className="relative p-5 lg:p-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-brand-border bg-brand-tint px-2 py-1 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-brand">
-              <CategoryIcon size={11} />
+          <div className="flex flex-wrap items-center gap-1.5 font-mono text-[9.5px] text-zinc-500">
+            <span className="inline-flex items-center gap-1.5 text-zinc-600">
+              <CategoryIcon size={11} className="text-brand" />
               {category.label}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
-              <Terminal size={10} className="text-emerald-700" />
-              {formatNumber(tool.commandCount)} commands
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
-              <Layers size={10} className="text-brand" />
-              {tool.sections.length} sections
-            </span>
-            <span className="ml-auto hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500 sm:flex">
+            <ChevronRight size={10} className="text-zinc-300" />
+            <span className="font-semibold text-zinc-900">{tool.shortName}</span>
+            <span className="ml-auto hidden items-center gap-1.5 uppercase tracking-[0.12em] text-zinc-500 sm:flex">
               <span className={cn('h-1.5 w-1.5 rounded-full', rawMode ? 'bg-emerald-600' : 'bg-brand')} />
               {rawMode ? 'raw template' : 'live injection'}
             </span>
           </div>
 
-          <h2 className="mt-3 text-balance text-xl font-semibold tracking-[-0.01em] text-zinc-900 lg:text-2xl">
-            {tool.shortName}
-          </h2>
-          {tool.fullTitle && tool.fullTitle !== tool.shortName && (
-            <p className="mt-1 text-[11.5px] leading-relaxed text-zinc-500">{tool.fullTitle}</p>
-          )}
+          <div className="mt-2.5 flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 className="text-balance text-xl font-semibold tracking-[-0.01em] text-zinc-900 lg:text-2xl">
+                {tool.shortName}
+              </h2>
+              {tool.fullTitle && tool.fullTitle !== tool.shortName && (
+                <p className="mt-1 text-[11.5px] leading-relaxed text-zinc-500">{tool.fullTitle}</p>
+              )}
+            </div>
+            <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
+                <Terminal size={10} className="text-emerald-700" />
+                {formatNumber(tool.commandCount)} commands
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
+                <Layers size={10} className="text-brand" />
+                {tool.sections.length} sections
+              </span>
+            </div>
+          </div>
 
           {tags.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -400,16 +411,16 @@ export default function CommandViewer({
             id={`sec-${tool.id}-${section.index}`}
             className="section-anchor"
           >
-            <div className="flex flex-wrap items-center gap-2 rounded-t-lg border border-b-0 border-zinc-200 bg-zinc-100 px-3 py-2 text-zinc-800">
+            <div className="flex flex-wrap items-center gap-2 rounded-t-lg border border-b-0 border-border-subtle bg-panel px-3.5 py-2.5 text-zinc-800">
               <span className="grid h-6 min-w-6 place-items-center rounded-sm border border-brand-border bg-white px-1 font-mono text-[9.5px] font-bold text-brand">
                 {String(section.index + 1).padStart(2, '0')}
               </span>
               <h3 className="min-w-0 flex-1 truncate text-[11.5px] font-semibold text-zinc-800">
                 {section.title}
               </h3>
-              <span className="rounded-sm border border-zinc-200 bg-white px-1.5 py-0.5 font-mono text-[8.5px] text-zinc-500">
-                {section.filtered.length}
-                {query ? `/${section.commands.length}` : ''}
+              <span className="rounded-sm border border-border-subtle bg-white px-1.5 py-0.5 font-mono text-[8.5px] text-zinc-500">
+                [{section.filtered.length}
+                {query ? `/${section.commands.length}` : ''}]
               </span>
               <CopyButton
                 compact
@@ -419,28 +430,34 @@ export default function CommandViewer({
               />
             </div>
 
-            <div className="overflow-hidden rounded-b-lg border border-zinc-200 bg-white">
-              <div className="grid grid-cols-[1fr] items-center gap-4 rounded-t-lg border-b border-border-subtle bg-zinc-50/90 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-500 sm:grid-cols-[1fr_260px_84px] lg:grid-cols-[1fr_340px_84px] xl:grid-cols-[1fr_420px_84px]">
+            <div className="overflow-hidden rounded-b-lg border border-border-subtle bg-white">
+              <div className="grid grid-cols-[1fr] items-center gap-4 border-b border-border-subtle bg-panel/80 px-4 py-2 font-mono text-[9.5px] font-semibold uppercase tracking-[0.12em] text-zinc-500 sm:grid-cols-[minmax(0,1fr)_260px_84px] lg:grid-cols-[minmax(0,1fr)_340px_84px] xl:grid-cols-[minmax(0,1fr)_420px_84px]">
                 <span>Command Syntax (Live Parameters)</span>
-                <span className="hidden sm:block">Operation &amp; Flags</span>
+                <span className="hidden sm:block">Inline Explanation</span>
                 <span className="hidden text-right sm:block">Action</span>
               </div>
 
-              {section.filtered.map((command) => {
+              {section.filtered.map((command, rowIndex) => {
                 const key = `${section.index}-${command.commandIndex}`
                 return (
                   <div
                     key={key}
-                    className="grid grid-cols-[1fr] items-center gap-4 border-t border-border-subtle bg-white px-4 py-3 transition hover:bg-orange-50/30 sm:grid-cols-[1fr_260px_84px] lg:grid-cols-[1fr_340px_84px] xl:grid-cols-[1fr_420px_84px]"
+                    className={cn(
+                      'grid grid-cols-[1fr] items-start gap-4 border-t border-border-subtle px-4 py-2.5 transition hover:bg-orange-50/40 sm:grid-cols-[minmax(0,1fr)_260px_84px] lg:grid-cols-[minmax(0,1fr)_340px_84px] xl:grid-cols-[minmax(0,1fr)_420px_84px]',
+                      rowIndex % 2 === 1 ? 'bg-[#FCFBF7]' : 'bg-white',
+                    )}
                   >
-                    <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-[12.5px] leading-relaxed text-slate-900">
-                      <span className="mr-1.5 select-none text-xs text-brand/50">$</span>
+                    <code className="min-w-0 whitespace-pre-wrap break-words pt-0.5 font-mono text-[12.5px] leading-relaxed text-zinc-900">
+                      <span className="mr-1.5 select-none text-xs text-brand/60">$</span>
                       {rawMode ? command.command : <TokenText text={command.command} vars={vars} />}
                     </code>
 
-                    <div className="min-w-0 whitespace-pre-wrap break-words font-mono text-[11px] leading-normal text-emerald-800">
+                    <div className="min-w-0 whitespace-pre-wrap break-words pt-0.5 font-mono text-[11px] leading-relaxed text-[#166534]">
                       {command.comment ? (
-                        <span>{commentText(command.comment)}</span>
+                        <span>
+                          <span className="select-none text-[#166534]/70"># </span>
+                          {commentText(command.comment)}
+                        </span>
                       ) : (
                         <span className="text-zinc-300">—</span>
                       )}

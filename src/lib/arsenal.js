@@ -28,46 +28,55 @@ export function stripEmoji(value) {
 export const CATEGORY_META = {
   '00': {
     label: 'Battlecards',
+    short: 'Battlecards',
     title: 'Instant Exam Battlecards',
     icon: Swords,
   },
   '01': {
     label: 'Port Scanning',
+    short: 'Scanning',
     title: 'Port Scanning & Fingerprinting',
     icon: Radar,
   },
   '02': {
     label: 'Web Fuzzing',
+    short: 'Web',
     title: 'Web Fuzzing & Discovery',
     icon: Globe,
   },
   '03': {
     label: 'Exploitation',
+    short: 'Exploit',
     title: 'Exploitation & Vulnerabilities',
     icon: Bug,
   },
   '04': {
     label: 'Remote Access',
+    short: 'Shells',
     title: 'Shells, Listeners & Remote Access',
     icon: Terminal,
   },
   '05': {
     label: 'Privilege Escalation',
+    short: 'PrivEsc',
     title: 'Privilege Escalation & Local Auditing',
     icon: Shield,
   },
   '06': {
     label: 'Active Directory',
+    short: 'AD',
     title: 'Active Directory & Kerberos',
     icon: Server,
   },
   '07': {
     label: 'Network Spraying & Pivoting',
+    short: 'Pivoting',
     title: 'Network Spraying & Pivoting',
     icon: GitFork,
   },
   '08': {
     label: 'Password Cracking',
+    short: 'Cracking',
     title: 'Password Cracking & Wordlists',
     icon: KeyRound,
   },
@@ -89,7 +98,7 @@ export const CATEGORY_FILTERS = [
   { id: 'all', label: 'All' },
   ...FILTER_DEFS.map((filter) => ({
     ...filter,
-    label: CATEGORY_META[filter.prefix]?.label || filter.id,
+    label: CATEGORY_META[filter.prefix]?.short || CATEGORY_META[filter.prefix]?.label || filter.id,
     icon: CATEGORY_META[filter.prefix]?.icon,
   })),
 ]

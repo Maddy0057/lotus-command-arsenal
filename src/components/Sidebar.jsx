@@ -97,9 +97,9 @@ export default function Sidebar({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-      <div className="shrink-0 border-b border-border-subtle bg-white p-3">
+      <div className="shrink-0 border-b border-border-subtle bg-white p-2.5">
         <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-zinc-500">
             Tool Index
           </span>
           {mobile && (
@@ -116,7 +116,7 @@ export default function Sidebar({
 
         <div className="group relative">
           <Search
-            size={14}
+            size={13}
             className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 transition group-focus-within:text-brand"
           />
           <input
@@ -126,7 +126,7 @@ export default function Sidebar({
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search tools and commands…"
             spellCheck={false}
-            className="focus-ring w-full rounded-md border border-border-subtle bg-white py-2 pl-8 pr-14 font-mono text-[11.5px] text-zinc-900 placeholder:text-zinc-400 transition focus:border-brand"
+            className="focus-ring h-8 w-full rounded-md border border-border-subtle bg-white py-1.5 pl-8 pr-14 font-mono text-[11px] text-zinc-900 placeholder:text-zinc-400 transition focus:border-brand"
           />
           {search ? (
             <button
@@ -138,36 +138,32 @@ export default function Sidebar({
               <X size={12} />
             </button>
           ) : (
-            <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-sm border border-border-subtle bg-white px-1.5 py-0.5 font-mono text-[9px] text-zinc-400">
+            <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-sm border border-border-subtle bg-white px-1.5 py-0.5 font-mono text-[8.5px] text-zinc-400">
               Ctrl K
             </kbd>
           )}
         </div>
 
         <div className="mt-2 flex flex-wrap gap-1">
-          {CATEGORY_FILTERS.map((filter) => {
-            const FilterIcon = filter.icon
-            return (
-              <button
-                key={filter.id}
-                type="button"
-                onClick={() => onFilterChange(filter.id)}
-                className={cn(
-                  'focus-ring inline-flex items-center gap-1 rounded-sm border px-2 py-1 text-[9.5px] font-medium transition',
-                  activeFilter === filter.id
-                    ? 'border-brand-border bg-brand-tint text-brand'
-                    : 'border-transparent bg-transparent text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
-                )}
-              >
-                {FilterIcon ? <FilterIcon size={9} className="shrink-0" /> : <Layers size={9} className="shrink-0" />}
-                {filter.label}
-              </button>
-            )
-          })}
+          {CATEGORY_FILTERS.map((filter) => (
+            <button
+              key={filter.id}
+              type="button"
+              onClick={() => onFilterChange(filter.id)}
+              className={cn(
+                'focus-ring inline-flex items-center rounded-full border px-2 py-0.5 text-[9.5px] font-medium transition',
+                activeFilter === filter.id
+                  ? 'border-brand-border bg-brand-tint text-brand'
+                  : 'border-transparent bg-transparent text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
+              )}
+            >
+              {filter.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-white px-3 py-1.5">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-white px-2.5 py-1.5">
         <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-400">
           {query ? `${totalVisibleTools} matches` : `${totalVisibleTools} tools`}
         </span>
@@ -191,7 +187,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-2 py-2.5">
+      <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-1.5 py-2">
         {visibleCategories.length === 0 && (
           <div className="px-3 py-8 text-center">
             <p className="text-[11px] font-medium text-zinc-700">No tools found</p>
@@ -213,15 +209,23 @@ export default function Sidebar({
                   type="button"
                   onClick={() => toggleCategory(category.id)}
                   className={cn(
-                    'focus-ring group flex w-full items-center gap-2 rounded-md border-l-2 px-2 py-1.5 text-left transition',
+                    'focus-ring group flex w-full items-center gap-1.5 rounded-md border-l-2 px-2 py-1.5 text-left transition',
                     activeCategory
                       ? 'border-l-brand bg-brand-tint/70'
                       : 'border-l-transparent hover:bg-card-hover',
                   )}
                   aria-expanded={open}
                 >
+                  <span
+                    className={cn(
+                      'w-4 shrink-0 font-mono text-[8.5px] font-semibold transition',
+                      activeCategory || open ? 'text-brand' : 'text-zinc-400',
+                    )}
+                  >
+                    {category.number}
+                  </span>
                   <CategoryIcon
-                    size={13}
+                    size={12}
                     className={cn(
                       'shrink-0 transition',
                       activeCategory || open ? 'text-brand' : 'text-zinc-400',
@@ -230,8 +234,15 @@ export default function Sidebar({
                   <span className="min-w-0 flex-1 truncate text-[10.5px] font-medium text-zinc-600 transition group-hover:text-zinc-900">
                     {category.label}
                   </span>
-                  <span className="shrink-0 rounded-sm border border-zinc-200 bg-zinc-100 px-1 py-0.5 font-mono text-[8.5px] text-zinc-600">
-                    {category.filteredTools.length}
+                  <span
+                    className={cn(
+                      'shrink-0 rounded-sm border px-1 py-0.5 font-mono text-[8px] transition',
+                      activeCategory
+                        ? 'border-brand-border bg-white text-brand'
+                        : 'border-zinc-200 bg-zinc-100 text-zinc-600',
+                    )}
+                  >
+                    [{category.filteredTools.length}]
                   </span>
                   <ChevronRight
                     size={12}
@@ -243,7 +254,7 @@ export default function Sidebar({
                 </button>
 
                 {open && (
-                  <div className="my-1 ml-3.5 space-y-0.5 border-l border-zinc-200 pl-2.5">
+                  <div className="my-0.5 ml-3 space-y-0.5 border-l border-zinc-200 pl-2">
                     {category.filteredTools.map((tool) => {
                       const active = tool.id === selectedToolId
                       return (
@@ -254,20 +265,16 @@ export default function Sidebar({
                           className={cn(
                             'group flex w-full items-start gap-1.5 border-l-2 py-1.5 pr-2 text-left transition',
                             active
-                              ? 'rounded-r border-brand bg-orange-50 pl-2 font-semibold text-orange-950'
-                              : 'rounded-sm border-transparent pl-2 text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
+                              ? 'border-brand bg-orange-50 pl-2.5 font-semibold text-orange-950'
+                              : 'border-transparent pl-2.5 text-zinc-500 hover:bg-card-hover hover:text-zinc-800',
                           )}
                         >
+                          <span className="min-w-0 flex-1 text-[10.5px] leading-[1.45]">
+                            {tool.shortName}
+                          </span>
                           <span
                             className={cn(
-                              'mt-1 h-1 w-1 shrink-0 rounded-full transition',
-                              active ? 'bg-brand' : 'bg-zinc-300 group-hover:bg-zinc-500',
-                            )}
-                          />
-                          <span className="min-w-0 flex-1 text-[10.5px] leading-[1.45]">{tool.shortName}</span>
-                          <span
-                            className={cn(
-                              'mt-0.5 shrink-0 font-mono text-[8.5px]',
+                              'mt-0.5 shrink-0 font-mono text-[8px]',
                               active ? 'text-brand' : 'text-zinc-400',
                             )}
                           >

@@ -4,6 +4,7 @@ import ParameterHUD from './components/ParameterHUD'
 import Sidebar from './components/Sidebar'
 import CommandViewer from './components/CommandViewer'
 import ShortcutsModal from './components/ShortcutsModal'
+import TableOfContents from './components/TableOfContents'
 import { buildArsenal, findCategoryForTool, findTool } from './lib/arsenal'
 import { useExamVars } from './context/ExamVarsContext'
 
@@ -39,6 +40,11 @@ export default function App() {
   const handleSelectTool = useCallback((toolId) => {
     setSelectedToolId(toolId)
     setMobileOpen(false)
+  }, [])
+
+  const handleOpenSearch = useCallback(() => {
+    if (window.innerWidth < 1024) setMobileOpen(true)
+    window.setTimeout(focusToolSearch, 80)
   }, [])
 
   const handleFilterChange = useCallback(
@@ -110,20 +116,21 @@ export default function App() {
   }, [])
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-canvas">
-      <div className="relative z-30 shrink-0 shadow-[0_8px_24px_-20px_rgba(28,25,23,0.35)]">
+    <div className="min-h-screen bg-canvas">
+      <div className="sticky top-0 z-40 shadow-[0_8px_24px_-24px_rgba(28,25,23,0.45)]">
         <Header
           stats={ARSENAL.stats}
           rawMode={rawMode}
           onToggleRaw={() => setRawMode((current) => !current)}
           onOpenShortcuts={() => setShortcutsOpen(true)}
           onOpenMobile={() => setMobileOpen(true)}
+          onOpenSearch={handleOpenSearch}
         />
         <ParameterHUD />
       </div>
 
-      <div className="flex min-h-0 flex-1 overflow-hidden">
-        <aside className="hidden h-full w-72 shrink-0 flex-col overflow-hidden border-r border-border-subtle bg-white lg:flex xl:w-80">
+      <div className="mx-auto flex w-full max-w-[1800px] items-start">
+        <aside className="sticky top-[92px] hidden h-[calc(100vh-92px)] w-72 shrink-0 overflow-y-auto border-r border-border-subtle bg-white lg:block xl:w-80">
           <Sidebar
             categories={ARSENAL.categories}
             search={search}
@@ -137,29 +144,31 @@ export default function App() {
           />
         </aside>
 
-        <main className="h-full flex-1 overflow-y-auto scroll-smooth bg-canvas px-5 py-6 lg:px-8 lg:py-8">
-          <div className="mx-auto w-full max-w-[1600px]">
-            {selectedTool && (
-              <CommandViewer
-                tool={selectedTool}
-                category={selectedCategory}
-                vars={vars}
-                rawMode={rawMode}
-                onRawModeChange={setRawMode}
-                onTagClick={handleTagClick}
-              />
-            )}
+        <main className="mx-auto min-w-0 max-w-5xl flex-1 scroll-smooth px-6 py-6 lg:px-8">
+          {selectedTool && (
+            <CommandViewer
+              tool={selectedTool}
+              category={selectedCategory}
+              vars={vars}
+              rawMode={rawMode}
+              onRawModeChange={setRawMode}
+              onTagClick={handleTagClick}
+            />
+          )}
 
-            <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
-              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-500">
-                LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
-              </p>
-              <p className="font-mono text-[9px] text-zinc-400">
-                44 tools · 2,043 commands · interpolated locally · no telemetry
-              </p>
-            </footer>
-          </div>
+          <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
+            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-500">
+              LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
+            </p>
+            <p className="font-mono text-[9px] text-zinc-400">
+              44 tools · 2,043 commands · interpolated locally · no telemetry
+            </p>
+          </footer>
         </main>
+
+        <aside className="sticky top-[92px] hidden h-[calc(100vh-92px)] w-60 shrink-0 overflow-y-auto py-6 pl-6 xl:block">
+          <TableOfContents tool={selectedTool} />
+        </aside>
       </div>
 
       {mobileOpen && (

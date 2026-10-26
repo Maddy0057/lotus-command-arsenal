@@ -75,7 +75,7 @@
   }
 
   .token-chip {
-    @apply inline-flex items-center rounded-[5px] border border-orange-300 bg-orange-50 px-1.5 py-[1px] font-mono font-semibold text-orange-900 text-[11.5px] shadow-sm;
+    @apply inline-flex items-center rounded border border-orange-300 bg-orange-50 px-1.5 py-0.5 font-mono font-semibold text-orange-950 text-[11.5px] shadow-sm;
   }
 
   .scroll-area {
@@ -83,7 +83,7 @@
   }
 
   .section-anchor {
-    scroll-margin-top: 16px;
+    scroll-margin-top: 104px;
   }
 }
 
