@@ -156,7 +156,7 @@ export default function App() {
 
         <footer className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
           <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-600">
-            🪷 Lotus Command Arsenal · OSCP &amp; Active Directory Field Manual
+            LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
           </p>
           <p className="font-mono text-[9px] text-zinc-700">
             44 tools · 2,043 commands · interpolated locally · no telemetry
