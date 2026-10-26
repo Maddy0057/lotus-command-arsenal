@@ -29,7 +29,7 @@ const SHORTCUTS = [
 
 function Key({ children }) {
   return (
-    <kbd className="inline-flex min-w-[26px] items-center justify-center rounded-md border border-border-bright bg-card px-1.5 py-1 font-mono text-[10px] font-medium text-zinc-300 shadow-[inset_0_-1px_0_rgba(0,0,0,0.5)]">
+    <kbd className="inline-flex min-w-[26px] items-center justify-center rounded-md border border-border-subtle bg-white px-1.5 py-1 font-mono text-[10px] font-medium text-zinc-700 shadow-[0_1px_0_#E7E5DF]">
       {children}
     </kbd>
   )
@@ -40,7 +40,7 @@ export default function ShortcutsModal({ open, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/70 px-4 py-10 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-zinc-900/30 px-4 py-10 backdrop-blur-sm sm:items-center"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose()
@@ -50,15 +50,15 @@ export default function ShortcutsModal({ open, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="shortcuts-title"
-        className="w-full max-w-lg animate-slide-up overflow-hidden rounded-2xl border border-border-bright bg-panel shadow-2xl"
+        className="w-full max-w-lg animate-slide-up overflow-hidden rounded-2xl border border-border-subtle bg-white shadow-xl"
       >
-        <div className="relative border-b border-border-subtle bg-gradient-to-r from-brand/15 via-transparent to-token-cyan/10 px-5 py-4">
+        <div className="relative border-b border-border-subtle bg-white px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-lg border border-brand/40 bg-brand/15 text-brand-bright">
+            <div className="grid h-9 w-9 place-items-center rounded-lg border border-brand-border bg-brand-tint text-brand">
               <Keyboard size={17} />
             </div>
             <div>
-              <h2 id="shortcuts-title" className="text-sm font-semibold text-white">
+              <h2 id="shortcuts-title" className="text-sm font-semibold text-zinc-900">
                 Keyboard Command Deck
               </h2>
               <p className="text-[10.5px] text-zinc-500">
@@ -69,7 +69,7 @@ export default function ShortcutsModal({ open, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="focus-ring absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-md border border-border-subtle bg-card text-zinc-400 transition hover:text-white"
+            className="focus-ring absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-md border border-border-subtle bg-white text-zinc-500 transition hover:border-brand-light hover:text-brand"
             aria-label="Close shortcuts"
           >
             <X size={14} />
@@ -82,11 +82,11 @@ export default function ShortcutsModal({ open, onClose }) {
             return (
               <div
                 key={shortcut.label}
-                className="flex items-center gap-3 px-5 py-3 transition hover:bg-card/50"
+                className="flex items-center gap-3 px-5 py-3 transition hover:bg-panel/60"
               >
-                <Icon size={14} className="shrink-0 text-zinc-500" />
+                <Icon size={14} className="shrink-0 text-zinc-400" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11.5px] font-medium text-zinc-200">{shortcut.label}</p>
+                  <p className="text-[11.5px] font-medium text-zinc-800">{shortcut.label}</p>
                   <p className="text-[10px] text-zinc-500">{shortcut.hint}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
@@ -99,14 +99,14 @@ export default function ShortcutsModal({ open, onClose }) {
           })}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-border-subtle bg-card/40 px-5 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-border-subtle bg-panel/60 px-5 py-3">
           <p className="text-[9.5px] text-zinc-500">
             Tip: click any tag on a tool card to search the arsenal for it.
           </p>
           <button
             type="button"
             onClick={onClose}
-            className="focus-ring rounded-md border border-brand/40 bg-brand/15 px-3 py-1.5 text-[10px] font-semibold text-brand-bright transition hover:bg-brand/25"
+            className="focus-ring rounded-md border border-brand-border bg-brand-tint px-3 py-1.5 text-[10px] font-semibold text-brand transition hover:bg-orange-100"
           >
             Got it
           </button>

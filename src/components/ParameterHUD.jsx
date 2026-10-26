@@ -41,16 +41,16 @@ function VarField({ field, value, onChange }) {
   return (
     <label
       className={cn(
-        'group relative block cursor-text rounded-md border border-border-subtle bg-card px-3 py-2 transition focus-within:border-brand/60 focus-within:bg-card-hover focus-within:shadow-[0_0_0_1px_rgba(0,229,255,0.18)]',
+        'group relative block cursor-text rounded-md border border-border-subtle bg-white px-3 py-2 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand/20',
         field.wide && 'sm:col-span-2',
       )}
     >
       <span className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-zinc-500 transition group-focus-within:text-brand-bright">
+        <span className="flex items-center gap-1.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-zinc-500 transition group-focus-within:text-brand">
           <Icon size={11} className="shrink-0" />
           {field.label}
         </span>
-        <span className="font-mono text-[9px] text-zinc-600 transition group-focus-within:text-brand-bright/80">
+        <span className="font-mono text-[9px] text-zinc-400 transition group-focus-within:text-brand/80">
           ${field.key}
         </span>
       </span>
@@ -60,7 +60,7 @@ function VarField({ field, value, onChange }) {
         placeholder={field.placeholder}
         spellCheck={false}
         autoComplete="off"
-        className="mt-0.5 w-full bg-transparent font-mono text-[12.5px] font-medium text-zinc-100 outline-none placeholder:text-zinc-600"
+        className="mt-0.5 w-full bg-transparent font-mono text-[12.5px] font-medium text-zinc-900 outline-none placeholder:text-zinc-400"
       />
     </label>
   )
@@ -76,13 +76,13 @@ export default function ParameterHUD() {
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 pr-1">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-terminal-green opacity-60" />
-              <span className="relative inline-flex h-2 w-2 animate-glow-pulse rounded-full bg-terminal-green" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 animate-glow-pulse rounded-full bg-emerald-600" />
             </span>
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-zinc-300">
+            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-zinc-700">
               Parameter HUD
             </span>
-            <span className="hidden rounded-sm border border-terminal-green/30 bg-terminal-green/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-terminal-green sm:inline">
+            <span className="hidden rounded-sm border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-emerald-700 sm:inline">
               Live interpolation
             </span>
           </div>
@@ -99,20 +99,20 @@ export default function ParameterHUD() {
                   className={cn(
                     'focus-ring inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[10px] font-medium transition',
                     active
-                      ? 'border-brand/45 bg-brand/10 text-brand-bright'
-                      : 'border-border-subtle bg-card text-zinc-400 hover:border-border-bright hover:text-zinc-100',
+                      ? 'border-brand-border bg-brand-tint text-brand'
+                      : 'border-border-subtle bg-white text-zinc-700 hover:border-brand-light hover:text-brand',
                   )}
                 >
                   {active && <Check size={10} />}
                   {preset.label}
-                  <span className="hidden font-mono text-[8.5px] text-zinc-600 lg:inline">{preset.hint}</span>
+                  <span className="hidden font-mono text-[8.5px] text-zinc-400 lg:inline">{preset.hint}</span>
                 </button>
               )
             })}
             <button
               type="button"
               onClick={resetDefaults}
-              className="focus-ring inline-flex items-center gap-1 rounded-md border border-border-subtle bg-card px-2.5 py-1 text-[10px] font-medium text-zinc-400 transition hover:border-red-400/35 hover:text-red-300"
+              className="focus-ring inline-flex items-center gap-1 rounded-md border border-border-subtle bg-white px-2.5 py-1 text-[10px] font-medium text-zinc-700 transition hover:border-red-300 hover:text-red-600"
               title="Restore factory parameter values"
             >
               <RotateCcw size={10} />
@@ -135,8 +135,8 @@ export default function ParameterHUD() {
             className={cn(
               'focus-ring inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-[10.5px] font-medium transition',
               drawerOpen
-                ? 'border-brand/40 bg-brand/10 text-brand-bright'
-                : 'border-border-subtle bg-card text-zinc-400 hover:border-border-bright hover:text-zinc-100',
+                ? 'border-brand-border bg-brand-tint text-brand'
+                : 'border-border-subtle bg-white text-zinc-700 hover:border-brand-light hover:text-brand',
             )}
           >
             <Server size={12} />
@@ -147,29 +147,29 @@ export default function ParameterHUD() {
               className={cn('transition-transform duration-200', drawerOpen && 'rotate-180')}
             />
           </button>
-          <span className="hidden items-center gap-1.5 font-mono text-[9.5px] text-zinc-600 sm:flex">
-            Tokens auto-inject into every command · <span className="text-token-cyan">$TARGET</span>
-            <span className="text-zinc-700">·</span>
-            <span className="text-token-cyan">$LHOST</span>
-            <span className="text-zinc-700">·</span>
-            <span className="text-token-cyan">$DOMAIN</span>
+          <span className="hidden items-center gap-1.5 font-mono text-[9.5px] text-zinc-400 sm:flex">
+            Tokens auto-inject into every command · <span className="text-brand">$TARGET</span>
+            <span className="text-zinc-300">·</span>
+            <span className="text-brand">$LHOST</span>
+            <span className="text-zinc-300">·</span>
+            <span className="text-brand">$DOMAIN</span>
           </span>
-          <span className="ml-auto font-mono text-[9px] text-zinc-600">
+          <span className="ml-auto font-mono text-[9px] text-zinc-400">
             12 variables · persisted locally
           </span>
         </div>
       </div>
 
       {drawerOpen && (
-        <div className="absolute inset-x-0 top-full z-50 animate-fade-in border-b border-border-bright bg-panel shadow-2xl">
+        <div className="absolute inset-x-0 top-full z-50 animate-fade-in border-b border-border-subtle bg-white shadow-xl">
           <div className="mx-auto max-w-[1800px] px-4 py-3 lg:px-6">
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="grid h-6 w-6 place-items-center rounded-sm border border-brand/30 bg-brand/10 text-brand-bright">
+                <span className="grid h-6 w-6 place-items-center rounded-sm border border-brand-border bg-brand-tint text-brand">
                   <Server size={12} />
                 </span>
                 <div>
-                  <p className="text-[11px] font-semibold text-zinc-200">
+                  <p className="text-[11px] font-semibold text-zinc-900">
                     Active Directory &amp; Kerberos Parameters
                   </p>
                   <p className="text-[9.5px] text-zinc-500">
@@ -180,7 +180,7 @@ export default function ParameterHUD() {
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                className="focus-ring rounded-sm border border-border-subtle bg-card px-2 py-1 text-[9.5px] text-zinc-400 transition hover:text-white"
+                className="focus-ring rounded-sm border border-border-subtle bg-white px-2 py-1 text-[9.5px] text-zinc-600 transition hover:border-brand-light hover:text-brand"
               >
                 Close
               </button>

@@ -111,7 +111,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      <div className="sticky top-0 z-50 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.95)]">
+      <div className="sticky top-0 z-50 shadow-[0_8px_24px_-20px_rgba(28,25,23,0.35)]">
         <Header
           stats={ARSENAL.stats}
           rawMode={rawMode}
@@ -155,10 +155,10 @@ export default function App() {
         </div>
 
         <footer className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle px-1 py-5">
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-600">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-500">
             LOTUS // ARSENAL · Offensive Security &amp; Active Directory Field Manual
           </p>
-          <p className="font-mono text-[9px] text-zinc-700">
+          <p className="font-mono text-[9px] text-zinc-400">
             44 tools · 2,043 commands · interpolated locally · no telemetry
           </p>
         </footer>
@@ -167,11 +167,11 @@ export default function App() {
       {mobileOpen && (
         <div className="fixed inset-0 z-[70] lg:hidden">
           <div
-            className="absolute inset-0 animate-fade-in bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 animate-fade-in bg-zinc-900/30 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
             role="presentation"
           />
-          <div className="absolute inset-y-0 left-0 w-[88%] max-w-[350px] animate-fade-in border-r border-border-bright bg-panel shadow-2xl">
+          <div className="absolute inset-y-0 left-0 w-[88%] max-w-[350px] animate-fade-in border-r border-border-subtle bg-canvas shadow-xl">
             <Sidebar
               mobile
               categories={ARSENAL.categories}

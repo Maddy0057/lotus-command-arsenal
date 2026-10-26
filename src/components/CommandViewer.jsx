@@ -38,16 +38,16 @@ function TokenText({ text, vars }) {
   )
 }
 
-function Callout({ icon: Icon, label, text, tone }) {
+function Callout({ icon: Icon, label, text, iconClass, className }) {
   return (
-    <div className="rounded-md border border-border-subtle bg-card px-3 py-2.5 transition hover:border-border-bright hover:bg-card-hover">
+    <div className={cn('rounded-md border px-3 py-2.5 transition', className)}>
       <div className="flex items-center gap-1.5">
-        <Icon size={11} className={cn('shrink-0', tone)} />
+        <Icon size={11} className={cn('shrink-0', iconClass)} />
         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-zinc-500">
           {label}
         </span>
       </div>
-      <p className="mt-1 text-[11px] leading-[1.55] text-zinc-400">{text}</p>
+      <p className="mt-1 text-[11px] leading-[1.55] text-zinc-800">{text}</p>
     </div>
   )
 }
@@ -61,8 +61,8 @@ function CopyButton({ copied, onClick, label = 'Copy', compact = false }) {
         'focus-ring inline-flex shrink-0 items-center gap-1.5 rounded-sm border font-medium transition',
         compact ? 'px-2 py-1 text-[9.5px]' : 'px-2.5 py-1.5 text-[10px]',
         copied
-          ? 'border-terminal-green/45 bg-terminal-green/10 text-terminal-green'
-          : 'border-border-subtle bg-card text-zinc-400 hover:border-brand/40 hover:text-brand-bright',
+          ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+          : 'border-zinc-200 bg-white text-zinc-700 shadow-sm hover:border-brand hover:text-brand',
       )}
       aria-label={copied ? 'Copied to clipboard' : label}
     >
@@ -155,31 +155,28 @@ export default function CommandViewer({
 
   return (
     <div className="min-w-0 animate-fade-in">
-      <div className="relative overflow-hidden rounded-lg border border-border-subtle bg-panel shadow-panel">
-        <div className="pointer-events-none absolute inset-0 grid-fade opacity-50" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
-
+      <div className="relative overflow-hidden rounded-xl border border-border-subtle bg-white shadow-sm">
         <div className="relative p-5 lg:p-6">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-brand/35 bg-brand/10 px-2 py-1 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-brand-bright">
+            <span className="inline-flex items-center gap-1.5 rounded-sm border border-brand-border bg-brand-tint px-2 py-1 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-brand">
               <CategoryIcon size={11} />
               {category.label}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card px-2 py-1 font-mono text-[9.5px] text-zinc-400">
-              <Terminal size={10} className="text-terminal-green" />
+            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
+              <Terminal size={10} className="text-emerald-700" />
               {formatNumber(tool.commandCount)} commands
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card px-2 py-1 font-mono text-[9.5px] text-zinc-400">
+            <span className="inline-flex items-center gap-1.5 rounded-sm border border-border-subtle bg-card-code px-2 py-1 font-mono text-[9.5px] text-zinc-600">
               <Layers size={10} className="text-brand" />
               {tool.sections.length} sections
             </span>
-            <span className="ml-auto hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-600 sm:flex">
-              <span className={cn('h-1.5 w-1.5 rounded-full', rawMode ? 'bg-terminal-green' : 'bg-brand-bright')} />
+            <span className="ml-auto hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500 sm:flex">
+              <span className={cn('h-1.5 w-1.5 rounded-full', rawMode ? 'bg-emerald-600' : 'bg-brand')} />
               {rawMode ? 'raw template' : 'live injection'}
             </span>
           </div>
 
-          <h2 className="mt-3 text-balance text-xl font-semibold tracking-[-0.01em] text-white lg:text-2xl">
+          <h2 className="mt-3 text-balance text-xl font-semibold tracking-[-0.01em] text-zinc-900 lg:text-2xl">
             {tool.shortName}
           </h2>
           {tool.fullTitle && tool.fullTitle !== tool.shortName && (
@@ -188,7 +185,7 @@ export default function CommandViewer({
 
           {tags.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              <span className="mr-0.5 font-mono text-[8.5px] uppercase tracking-[0.14em] text-zinc-600">
+              <span className="mr-0.5 font-mono text-[8.5px] uppercase tracking-[0.14em] text-zinc-400">
                 Tags
               </span>
               {tags.map((tag) => (
@@ -196,7 +193,7 @@ export default function CommandViewer({
                   key={tag}
                   type="button"
                   onClick={() => onTagClick(tag)}
-                  className="focus-ring rounded-sm border border-border-subtle bg-card px-2 py-0.5 font-mono text-[9.5px] text-zinc-400 transition hover:border-brand/40 hover:bg-brand/5 hover:text-brand-bright"
+                  className="focus-ring rounded-sm border border-border-subtle bg-white px-2 py-0.5 font-mono text-[9.5px] text-zinc-600 transition hover:border-brand-light hover:bg-brand-tint hover:text-brand"
                   title={`Search arsenal for #${tag}`}
                 >
                   #{tag}
@@ -210,30 +207,33 @@ export default function CommandViewer({
               icon={Target}
               label="// OBJECTIVE"
               text={interpolateVars(callout.why || '—', vars)}
-              tone="text-brand-bright"
+              iconClass="text-brand"
+              className="border-orange-200/80 bg-orange-50/70"
             />
             <Callout
               icon={Radar}
               label="// ATTACK SURFACE"
               text={interpolateVars(callout.where || '—', vars)}
-              tone="text-token-cyan"
+              iconClass="text-amber-600"
+              className="border-amber-200/80 bg-amber-50/70"
             />
             <Callout
               icon={Clock}
               label="// OPERATIONAL TIMING"
               text={interpolateVars(callout.when || '—', vars)}
-              tone="text-terminal-green"
+              iconClass="text-emerald-700"
+              className="border-emerald-200/80 bg-emerald-50/70"
             />
           </div>
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg border border-border-subtle bg-panel p-3">
+      <div className="mt-4 rounded-xl border border-border-subtle bg-white p-3 shadow-sm">
         <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
           <div className="group relative min-w-0 flex-1">
             <Search
               size={14}
-              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 transition group-focus-within:text-brand-bright"
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 transition group-focus-within:text-brand"
             />
             <input
               type="text"
@@ -241,33 +241,33 @@ export default function CommandViewer({
               onChange={(event) => setCommandQuery(event.target.value)}
               placeholder="Filter commands in this tool…"
               spellCheck={false}
-              className="focus-ring w-full rounded-md border border-border-subtle bg-card py-2 pl-8 pr-20 font-mono text-[11.5px] text-zinc-100 placeholder:text-zinc-600 transition focus:border-brand/50"
+              className="focus-ring w-full rounded-md border border-border-subtle bg-white py-2 pl-8 pr-20 font-mono text-[11.5px] text-zinc-900 placeholder:text-zinc-400 transition focus:border-brand"
             />
             {commandQuery ? (
               <button
                 type="button"
                 onClick={() => setCommandQuery('')}
-                className="absolute right-2 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-sm text-zinc-500 transition hover:bg-card-hover hover:text-white"
+                className="absolute right-2 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-sm text-zinc-400 transition hover:bg-card-hover hover:text-zinc-900"
                 aria-label="Clear command filter"
               >
                 <X size={12} />
               </button>
             ) : (
-              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-zinc-600">
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-zinc-400">
                 {visibleCommandCount} shown
               </span>
             )}
           </div>
 
-          <div className="flex shrink-0 items-center rounded-md border border-border-subtle bg-card p-0.5">
+          <div className="flex shrink-0 items-center rounded-md border border-border-subtle bg-panel p-0.5">
             <button
               type="button"
               onClick={() => onRawModeChange(false)}
               className={cn(
                 'focus-ring inline-flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-[10px] font-medium transition',
                 !rawMode
-                  ? 'bg-brand/15 text-brand-bright'
-                  : 'text-zinc-500 hover:text-zinc-200',
+                  ? 'bg-brand-tint text-brand'
+                  : 'text-zinc-500 hover:text-zinc-800',
               )}
             >
               <Radio size={11} />
@@ -280,8 +280,8 @@ export default function CommandViewer({
               className={cn(
                 'focus-ring inline-flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-[10px] font-medium transition',
                 rawMode
-                  ? 'bg-terminal-green/10 text-terminal-green'
-                  : 'text-zinc-500 hover:text-zinc-200',
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : 'text-zinc-500 hover:text-zinc-800',
               )}
             >
               <Braces size={11} />
@@ -292,7 +292,7 @@ export default function CommandViewer({
         </div>
 
         <div className="mt-2 flex items-center gap-2">
-          <span className="shrink-0 font-mono text-[8.5px] uppercase tracking-[0.14em] text-zinc-600">
+          <span className="shrink-0 font-mono text-[8.5px] uppercase tracking-[0.14em] text-zinc-400">
             Jump
           </span>
           <div className="no-scrollbar flex min-w-0 flex-1 gap-1 overflow-x-auto pb-0.5">
@@ -301,10 +301,10 @@ export default function CommandViewer({
                 key={section.index}
                 type="button"
                 onClick={() => jumpToSection(section.index)}
-                className="focus-ring group inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-border-subtle bg-card px-2 py-1 text-[9.5px] text-zinc-500 transition hover:border-brand/40 hover:bg-brand/5 hover:text-brand-bright"
+                className="focus-ring group inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-border-subtle bg-white px-2 py-1 text-[9.5px] text-zinc-700 transition hover:border-brand-light hover:text-brand"
                 title={section.title}
               >
-                <span className="font-mono text-[8.5px] text-zinc-600 transition group-hover:text-brand-bright/80">
+                <span className="font-mono text-[8.5px] text-zinc-400 transition group-hover:text-brand/80">
                   {String(section.index + 1).padStart(2, '0')}
                 </span>
                 <span className="max-w-[130px] truncate">{section.title}</span>
@@ -315,11 +315,11 @@ export default function CommandViewer({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2 px-1">
-        <p className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-zinc-600">
+        <p className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-zinc-400">
           {formatNumber(visibleCommandCount)} of {formatNumber(tool.commandCount)} commands
           {query ? ' matched' : ''} · {visibleSections.length} of {sections.length} sections
         </p>
-        <span className="ml-auto hidden items-center gap-1.5 text-[9.5px] text-zinc-600 sm:flex">
+        <span className="ml-auto hidden items-center gap-1.5 text-[9.5px] text-zinc-400 sm:flex">
           <Copy size={10} />
           Copy inserts live interpolated values
         </span>
@@ -327,16 +327,16 @@ export default function CommandViewer({
 
       <div className="mt-2 space-y-4 pb-10">
         {visibleSections.length === 0 && (
-          <div className="rounded-lg border border-border-subtle bg-panel px-4 py-14 text-center">
-            <Search size={20} className="mx-auto text-zinc-600" />
-            <p className="mt-2 text-[12px] font-medium text-zinc-300">No matching commands</p>
-            <p className="mt-1 text-[10.5px] text-zinc-600">
+          <div className="rounded-xl border border-border-subtle bg-white px-4 py-14 text-center shadow-sm">
+            <Search size={20} className="mx-auto text-zinc-300" />
+            <p className="mt-2 text-[12px] font-medium text-zinc-700">No matching commands</p>
+            <p className="mt-1 text-[10.5px] text-zinc-400">
               Clear the filter to see all {formatNumber(tool.commandCount)} commands in this tool.
             </p>
             <button
               type="button"
               onClick={() => setCommandQuery('')}
-              className="focus-ring mt-3 rounded-sm border border-border-bright bg-card px-3 py-1.5 text-[10px] text-zinc-300 transition hover:text-white"
+              className="focus-ring mt-3 rounded-sm border border-border-subtle bg-white px-3 py-1.5 text-[10px] text-zinc-700 transition hover:border-brand-light hover:text-brand"
             >
               Clear filter
             </button>
@@ -349,14 +349,14 @@ export default function CommandViewer({
             id={`sec-${tool.id}-${section.index}`}
             className="section-anchor"
           >
-            <div className="flex flex-wrap items-center gap-2 rounded-t-lg border border-b-0 border-border-subtle bg-card px-3 py-2">
-              <span className="grid h-6 min-w-6 place-items-center rounded-sm border border-brand/30 bg-brand/10 px-1 font-mono text-[9.5px] font-bold text-brand-bright">
+            <div className="flex flex-wrap items-center gap-2 rounded-t-lg border border-b-0 border-zinc-200 bg-zinc-100 px-3 py-2 text-zinc-800">
+              <span className="grid h-6 min-w-6 place-items-center rounded-sm border border-brand-border bg-white px-1 font-mono text-[9.5px] font-bold text-brand">
                 {String(section.index + 1).padStart(2, '0')}
               </span>
-              <h3 className="min-w-0 flex-1 truncate text-[11.5px] font-semibold text-zinc-200">
+              <h3 className="min-w-0 flex-1 truncate text-[11.5px] font-semibold text-zinc-800">
                 {section.title}
               </h3>
-              <span className="rounded-sm border border-border-subtle bg-panel px-1.5 py-0.5 font-mono text-[8.5px] text-zinc-500">
+              <span className="rounded-sm border border-zinc-200 bg-white px-1.5 py-0.5 font-mono text-[8.5px] text-zinc-500">
                 {section.filtered.length}
                 {query ? `/${section.commands.length}` : ''}
               </span>
@@ -368,27 +368,27 @@ export default function CommandViewer({
               />
             </div>
 
-            <div className="overflow-hidden rounded-b-lg border border-border-subtle bg-panel">
+            <div className="overflow-hidden rounded-b-lg border border-zinc-200 bg-white">
               {section.filtered.map((command, rowIndex) => {
                 const key = `${section.index}-${command.commandIndex}`
                 return (
                   <div
                     key={key}
                     className={cn(
-                      'group grid gap-2 px-3 py-2.5 transition hover:bg-card-hover/60 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_auto] lg:items-start lg:gap-6',
+                      'group grid gap-2 bg-white px-3 py-2.5 transition hover:bg-orange-50/30 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_auto] lg:items-start lg:gap-6',
                       rowIndex > 0 && 'border-t border-border-subtle',
                     )}
                   >
-                    <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-[12px] leading-[1.7] text-zinc-100">
-                      <span className="mr-1.5 select-none text-xs text-brand-bright/50">$</span>
+                    <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-[12px] leading-[1.7] text-slate-900">
+                      <span className="mr-1.5 select-none text-xs text-brand/50">$</span>
                       {rawMode ? command.command : <TokenText text={command.command} vars={vars} />}
                     </code>
 
                     <div className="min-w-0 whitespace-pre-wrap break-words font-mono text-[11px] leading-[1.7] lg:pt-0.5">
                       {command.comment ? (
-                        <span className="text-terminal-green">{commentText(command.comment)}</span>
+                        <span className="text-emerald-800">{commentText(command.comment)}</span>
                       ) : (
-                        <span className="text-zinc-700">—</span>
+                        <span className="text-zinc-300">—</span>
                       )}
                     </div>
 
